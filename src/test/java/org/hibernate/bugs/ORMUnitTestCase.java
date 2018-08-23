@@ -80,22 +80,22 @@ public class ORMUnitTestCase extends BaseCoreFunctionalTestCase {
 
         String selector = "foo";
         ImmutableEntity trouble = new ImmutableEntity(selector);
-        session.persist(trouble);
+        s.persist(trouble);
 
         MutableEntity entity = new MutableEntity(trouble, "start");
-        session.persist(entity);
+        s.persist(entity);
 
 
         // Change a muteable value via selection based on an immutable property
         String statement = "Update MutableEntity e set e.changeable = :changeable where e.trouble.id in " +
                 "(select i.id from ImmutableEntity i where i.selector = :selector)";
 
-        Query query = session.createQuery(statement);
+        Query query = s.createQuery(statement);
         query.setParameter("changeable", "end");
         query.setParameter("selector", "foo");
         query.executeUpdate();
 
-        session.refresh(entity);
+        s.refresh(entity);
 
         assertEquals("end", entity.getChangeable());
 
